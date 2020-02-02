@@ -38,5 +38,5 @@ network:
       addresses: [$IP_ADDR]
       gateway4: $IP_GW
       nameservers:
-        adddresses: [$IP_DNS]
+        addresses: [$IP_DNS]
 EOF
