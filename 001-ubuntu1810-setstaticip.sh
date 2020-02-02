@@ -16,6 +16,7 @@
 
 # location of involved files, from Ubuntu 19.10
 FILE_ORG_CLOUD_INIT="/etc/netplan/50-cloud-init.yaml"
+FILE_CLOUDINIT_NETDISABLE="/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg"
 FILE_NETCFG="/etc/netplan/01-netcfg.yaml"
 
 # set network parameters here
@@ -27,6 +28,11 @@ IP_DNS="208.67.222.222,208.67.220.220"
 if [ -f "$FILE_ORG_CLOUD_INIT" ]; then
   rm /etc/netplan/50-cloud-init.yaml
 fi
+
+# disable network config on cloud-init
+cat > $FILE_CLOUDINIT_NETDISABLE <<EOF
+network: {config: disabled}
+EOF
 
 # write yaml network config to destination file
 cat > $FILE_NETCFG <<EOF
@@ -40,3 +46,6 @@ network:
       nameservers:
         addresses: [$IP_DNS]
 EOF
+
+#apply netplan (or reboot)
+/usr/sbin/netplan apply
