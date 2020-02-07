@@ -14,4 +14,4 @@ polar-all:
     polar3:
       ansible_host: 192.168.86.13
   vars:
-    ansible_user: ubuntu
+    ansible_user: user01

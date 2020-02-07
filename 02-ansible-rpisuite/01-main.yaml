@@ -90,7 +90,7 @@
 
     - name: remove default user
       user:
-        name: user03
+        name: ubuntu
         state: absent
         remove: yes
 
