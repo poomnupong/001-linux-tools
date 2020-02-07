@@ -1,0 +1,100 @@
+---
+# initialize raspberry pi imaged with ubuntu 18.04
+- hosts: all
+  become: yes
+
+  vars_files:
+    - vars.yaml
+  
+  tasks:
+    - name: testvar01
+      set_fact: 
+        NODE_MAC_ADDRESS: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    
+    - name: set variable based on MAC address
+      set_fact:
+        NODE_HOSTNAME: "{{ mac_address_mapping[NODE_MAC_ADDRESS].name }}"
+        NODE_IP_ADDR: "{{ mac_address_mapping[NODE_MAC_ADDRESS].ip }}"
+        NODE_DEFAULTGW: "{{ default_gateway }}"
+        NODE_NAMESERVERS: "{{ dns_nameservers[0] }},{{ dns_nameservers[1] }}"
+        NODE_MGMTUSER: "{{ mgmt_user }}"
+
+    - name: add line to host file
+      lineinfile:
+        state: present
+        path: /etc/hosts
+        insertafter: '^127\.0\.0\.1 localhost'
+        regexp: "127.0.0.1 {{ NODE_HOSTNAME }}"
+        line: "127.0.0.1 {{ NODE_HOSTNAME }}"
+    
+    # demonstrate multi-plate
+    - name: prepare and update network configuration artifacts
+      template:
+        src: "templates/{{ item.template }}"
+        dest: "{{ item.dest }}"
+        mode: 0644
+      with_items:
+        - { template: hostname.j2, dest: /etc/hostname2 }
+        - { template: netplan_51-netconfig.j2, dest: /etc/netplan/51-netconfig.yaml }
+
+    - name: disable default cloud-init network configuration
+      lineinfile:
+        state: present
+        create: yes
+        path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+        line: "network: {config: disabled}"
+    
+    - name: remove old netconfig file
+      file:
+        path: /etc/netplan/50-cloud-init.yaml
+        state: absent
+
+    - name: create management user
+      user:
+        name: "{{ NODE_MGMTUSER }}"
+        state: present
+        shell: /bin/bash
+        groups: "adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd"
+    
+    - name: deploy ssh key for management user
+      authorized_key:
+        user: "{{ NODE_MGMTUSER }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+    - name: set sudoers for management user
+      copy:
+        dest: "/etc/sudoers.d/{{ NODE_MGMTUSER }}"
+        content: "user02  ALL=(ALL) NOPASSWD: ALL\n"
+
+    - name: disable password authentication
+      lineinfile:
+        dest: "/etc/ssh/sshd_config"
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+        backup: yes
+      notify:
+        - restart ssh
+
+    - name: disable root login
+      lineinfile:
+        dest: "/etc/ssh/sshd_config"
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+        backup: yes
+      notify:
+        - restart ssh
+
+    - name: remove default user
+      user:
+        name: user03
+        state: absent
+        remove: yes
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: sshd
+        state: restarted

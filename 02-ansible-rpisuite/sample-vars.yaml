@@ -1,0 +1,27 @@
+---
+#####################################
+# 02-ansible-rpisuite
+# vars.yaml
+# Variable file for raspberry pi
+# Please change file name to vars.yaml
+#####################################
+
+# mapping of MAC address to IP
+mac_address_mapping:
+  "dc:a6:32:xx:xx:xx":
+    name: host1
+    ip: "192.168.1.1/24"
+  "dc:a6:32:xx:xx:xx":
+    name: host2
+    ip: "192.168.1.1/24"
+
+# list of nameservers
+dns_nameservers:
+  - "208.67.220.220"
+  - "208.67.222.222"
+
+# default gateway
+default_gateway: "192.168.1.254"
+
+# specify our own management user
+mgmt_user: "user1"

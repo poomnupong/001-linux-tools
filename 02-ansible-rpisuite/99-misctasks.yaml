@@ -1,0 +1,31 @@
+---
+# misc tasks / debug / example code
+- hosts: polar1
+  become: yes
+
+  vars_files:
+    - vars.yaml
+  
+  tasks:
+    - name: testvar01
+      set_fact: 
+        NODE_MAC_ADDRESS: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    
+    - name: set variable based on MAC address
+      set_fact:
+        NODE_HOSTNAME: "{{ mac_address_mapping[NODE_MAC_ADDRESS].name }}"
+        NODE_IP_ADDR: "{{ mac_address_mapping[NODE_MAC_ADDRESS].ip }}"
+        NODE_DEFAULTGW: "{{ default_gateway }}"
+        NODE_NAMESERVERS: "{{ dns_nameservers[0] }},{{ dns_nameservers[1] }}"
+    
+    - name: print
+      debug: msg="{{ NODE_MAC_ADDRESS }}"
+    
+    - name: print2
+      debug: msg="{{ NODE_HOSTNAME.split('.')[0] }}  aaa  {{ NODE_IP_ADDR }}"
+
+    - name: delete every line in host file that has '1.1.1.1'
+      lineinfile:
+        path: /etc/hosts
+        state: absent
+        regexp: '^1\.1\.1\.1'

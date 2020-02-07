@@ -1,0 +1,18 @@
+---
+#####################################
+# 02-ansible-rpisuite
+# inventory.yaml
+# Inventory file for raspberry pi
+# Please change file name to inventory.yaml
+#####################################
+
+polar-all:
+  hosts:
+    polar1:
+      ansible_host: 192.168.1.89
+    polar2:
+      ansible_host: 192.168.1.90
+    polar3:
+      ansible_host: 192.168.1.91
+  vars:
+    ansible_user: ubuntu
