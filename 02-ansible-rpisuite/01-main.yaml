@@ -26,6 +26,11 @@
         insertafter: '^127\.0\.0\.1 localhost'
         regexp: "127.0.0.1 {{ NODE_HOSTNAME }}"
         line: "127.0.0.1 {{ NODE_HOSTNAME }}"
+
+    - name: set hostname
+      hostname:
+        name: "{{ NODE_HOSTNAME }}"
+        use: debian
     
     # demonstrate multi-plate
     - name: prepare and update network configuration artifacts
