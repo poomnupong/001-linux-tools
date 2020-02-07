@@ -57,7 +57,7 @@ There are tasks needed to be done before running the playbook:
 
 - Then run the playbook:
 
-        > ansible-playbook -i inventory.yaml main.yaml
+        > ansible-playbook -i inventory.yaml 01-main.yaml
 
 - IP address change won't take effect until reboot. This is a design choice to prevent lockout in case there's something wrong with user or ssh key 
 

@@ -8,10 +8,10 @@
 polar-all:
   hosts:
     polar1:
-      ansible_host: 192.168.86.28
+      ansible_host: 192.168.86.11
     polar2:
-      ansible_host: 192.168.86.29
+      ansible_host: 192.168.86.12
     polar3:
-      ansible_host: 192.168.86.30
+      ansible_host: 192.168.86.13
   vars:
     ansible_user: ubuntu

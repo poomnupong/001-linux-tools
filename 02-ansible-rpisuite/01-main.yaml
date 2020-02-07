@@ -32,9 +32,10 @@
       template:
         src: "templates/{{ item.template }}"
         dest: "{{ item.dest }}"
+        force: yes
         mode: 0644
       with_items:
-        - { template: hostname.j2, dest: /etc/hostname2 }
+        - { template: hostname.j2, dest: /etc/hostname }
         - { template: netplan_51-netconfig.j2, dest: /etc/netplan/51-netconfig.yaml }
 
     - name: disable default cloud-init network configuration
@@ -65,7 +66,7 @@
     - name: set sudoers for management user
       copy:
         dest: "/etc/sudoers.d/{{ NODE_MGMTUSER }}"
-        content: "user02  ALL=(ALL) NOPASSWD: ALL\n"
+        content: "{{ NODE_MGMTUSER }}  ALL=(ALL) NOPASSWD: ALL\n"
 
     - name: disable password authentication
       lineinfile:
@@ -92,6 +93,10 @@
         name: user03
         state: absent
         remove: yes
+
+    - name: set time zone
+      timezone:
+        name: America/Los_Angeles
 
   handlers:
     - name: restart ssh
