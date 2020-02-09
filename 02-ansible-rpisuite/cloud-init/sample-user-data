@@ -1,0 +1,38 @@
+#cloud-config
+
+# This is the user-data configuration file for cloud-init. By default this sets
+# up an initial user called "ubuntu" with password "ubuntu", which must be
+# changed at first login. However, many additional actions can be initiated on
+# first boot from this file. The cloud-init documentation has more details:
+#
+# https://cloudinit.readthedocs.io/
+#
+# Some additional examples are provided in comments below the default
+# configuration.
+
+# Usage for Raspberry Pi 4 polarbear cluster
+# - read throug this file and populate your parameters: ssh pubkeys, custom management users
+# - save this file as 'user-data' and copy it to system-boot partition of the sd card
+# - or alternative inject this file into the image. This require a linux machine or VM and the use of partx command to mount first vfat partition
+
+hostname: polarcub
+locale: C.UTF-8
+timezone: America/Los_Angeles
+
+# Enable password authentication with the SSH daemon
+ssh_pwauth: false
+
+# insert your ssh pubkey here; for default user ubuntu
+ssh_authorized_keys:
+  - ssh-ed25519 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx xxx@xxx.com
+
+# I prefer custom management user to reduce chance of brute force, change your username and insert ssh keys here:
+users:
+  - name: user99
+    gecos: user99
+    groups: [adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lxd]
+    lock_passwd: true
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-ed25519 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx xxx@xxx.com
+    sudo: ALL=(ALL) NOPASSWD:ALL

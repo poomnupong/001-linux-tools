@@ -1,6 +1,6 @@
 ---
 # further condition the pis with updates and necessary packages
-- hosts: all
+- hosts: polar-all
   become: yes
 
   vars_files:
@@ -22,3 +22,11 @@
     - name: set time zone
       timezone:
         name: America/Los_Angeles
+
+    - name: reboot if required
+      shell: "sleep 10; /usr/sbin/reboot"
+      args:
+        removes: /var/run/reboot-erquired
+      async: 300
+      poll: 0
+      ignore_errors: true

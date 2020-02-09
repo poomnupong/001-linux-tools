@@ -3,16 +3,50 @@
 # 02-ansible-rpisuite
 # inventory.yaml
 # Inventory file for raspberry pi
-# Please change file name to inventory.yaml
 #####################################
 
+# our static IP addresses
+# ansible_user should be changed to custom management user defined in ./cloud-init/user-data
 polar-all:
   hosts:
     polar1:
-      ansible_host: 192.168.1.89
-    polar2:
-      ansible_host: 192.168.1.90
-    polar3:
       ansible_host: 192.168.1.91
+    polar2:
+      ansible_host: 192.168.1.92
+    polar3:
+      ansible_host: 192.168.1.93
+    polar4:
+      ansible_host: 192.168.1.94
   vars:
     ansible_user: ubuntu
+
+# add raspberry pi dhcp addresses here
+# they can be detected by command nmap -sn
+# example from Mac OS:
+# ❯ sudo map -sn 192.168.1.0/24 | grep -B2 Rasp
+# Password:
+# sudo: map: command not found
+# ❯ sudo nmap -sn 192.168.86.0/24 | grep -B2 Rasp
+# Nmap scan report for 192.168.1.38
+# Host is up (0.0046s latency).
+# MAC Address: DC:A6:32:XX:XX:XX (Raspberry Pi Trading)
+# --
+# Nmap scan report for 192.168.1.39
+# Host is up (0.0046s latency).
+# MAC Address: DC:A6:32:XX:XX:XX (Raspberry Pi Trading)
+# --
+# Nmap scan report for 192.168.1.40
+# Host is up (0.0046s latency).
+# MAC Address: DC:A6:32:XX:XX:XX (Raspberry Pi Trading)
+
+polarcub-all:
+  hosts:
+    polarcub1:
+      ansible_host: 192.168.1.38
+    polarcub2:
+      ansible_host: 192.168.1.39
+    polarcub3:
+      ansible_host: 192.168.1.40
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
