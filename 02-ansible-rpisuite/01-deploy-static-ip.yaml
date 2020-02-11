@@ -102,6 +102,10 @@
     - name: reboot the machine
       shell:
         cmd: "sleep 10; /usr/sbin/reboot"
+      args:
+        removes: /var/run/reboot-required
+      async: 300
+      poll: 0
       ignore_errors: true
 
   handlers:

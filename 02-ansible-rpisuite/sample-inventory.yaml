@@ -21,6 +21,7 @@ polar-all:
     ansible_user: ubuntu
 
 # add raspberry pi dhcp addresses here
+# and add mac address to static ip map to vars.yaml
 # they can be detected by command nmap -sn
 # example from Mac OS:
 # ❯ sudo map -sn 192.168.1.0/24 | grep -B2 Rasp
