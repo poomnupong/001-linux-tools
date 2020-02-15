@@ -1,0 +1,9 @@
+---
+# shutdown all hosts
+- hosts: polar-all
+  become: yes
+
+  tasks:
+  - name: shutdown hosts
+    command: "/usr/sbin/shutdown -r now"
+    ignore_errors: yes

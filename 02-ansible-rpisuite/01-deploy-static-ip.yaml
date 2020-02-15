@@ -47,8 +47,17 @@
         force: yes
         mode: 0644
       with_items:
-        - { template: hostname.j2, dest: /etc/hostname }
+        # this no longer works with Ubuntu 19.10
+        #- { template: hostname.j2, dest: /etc/hostname }
         - { template: netplan_51-netconfig.j2, dest: /etc/netplan/51-netconfig.yaml }
+
+    # change hostname
+    - name: change hostname
+      lineinfile:
+        dest: "/boot/firmware/user-data"
+        regexp: "^hostname"
+        line: "hostname: {{ NODE_HOSTNAME }}"
+        state: present
 
     # disable default network config from cloud-init
     - name: disable default cloud-init network configuration
@@ -102,9 +111,9 @@
     - name: reboot the machine
       shell:
         cmd: "sleep 10; /usr/sbin/reboot"
-      args:
-        removes: /var/run/reboot-required
-      async: 300
+      #args:
+      #  removes: /var/run/reboot-required
+      #async: 300
       poll: 0
       ignore_errors: true
 
