@@ -5,5 +5,8 @@
 
   tasks:
   - name: shutdown hosts
-    command: "/usr/sbin/shutdown -h now"
+    command: "/usr/sbin/shutdown -h +1"
+    poll: 0
+    async: 0
     ignore_errors: yes
+    
