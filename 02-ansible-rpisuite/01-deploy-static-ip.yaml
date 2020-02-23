@@ -95,12 +95,35 @@
       notify:
         - restart ssh
 
-    # remove default user, if present
-    - name: remove default user
+    # add user
+    - name: add management user
       user:
-        name: ubuntu
-        state: absent
-        remove: yes
+        name: user01
+        state: present
+        create_home: yes
+        shell: "/bin/bash"
+        groups: "adm,dialout,cdrom,floppy,sudo,audio,dip,video,plugdev,lxd,netdev"
+
+    # and deploy our ssh_key
+    - name: deploy ssh_key for management user
+      authorized_key:
+        user: user01
+        state: present
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGRaqicxUyvD6ii5jyiIPGeSJHOIwp82fvNvaGROz4Lt pnupong@cisco.com"
+
+    # remove default user, if present
+    #- name: remove default user
+    #  user:
+    #    name: ubuntu
+    #    state: absent
+    #    remove: yes
+    
+    # add sudo for user01
+    - name: sudo for user01
+      copy:
+        content: 'user01 ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/user01
+        mode: 0440
 
     # get the time zone right
     - name: set time zone
@@ -110,7 +133,7 @@
     # and just reboot them
     - name: reboot the machine
       shell:
-        cmd: "sleep 10; /usr/sbin/reboot"
+        cmd: "sleep 5; /sbin/reboot"
       #args:
       #  removes: /var/run/reboot-required
       #async: 300

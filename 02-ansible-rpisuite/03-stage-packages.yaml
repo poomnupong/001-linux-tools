@@ -1,0 +1,124 @@
+---
+# stage install necessary packages
+- hosts: polar-all
+  become: true
+  
+  tasks:
+
+  # remove default user, if present
+  - name: remove default user
+    user:
+      name: ubuntu
+      state: absent
+      remove: yes
+
+  - name: upgrade system
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: install necessary packages
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - apt-transport-https
+        - curl
+        - ca-certificates
+        - software-properties-common
+        - gnupg2
+        - ntp
+
+  - name: install packages for master nodes
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - haproxy
+        - keepalived
+
+  - name: add apt signing key for docker
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: add apt repository for stable version
+    apt_repository:
+      repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+  
+  - name: install docker
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    notify:
+      - docker status
+  
+  - name: add user to docker group
+    user:
+      name: user01
+      group: docker
+  
+  - name: Remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+      - none
+
+  - name: Disable swap
+    command: swapoff -a
+    when: ansible_swaptotal_mb > 0
+
+  - name: Add an apt signing key for Kubernetes
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Adding apt repository for Kubernetes
+    apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes.list
+
+  - name: Install Kubernetes binaries
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - kubelet 
+        - kubeadm 
+        - kubectl
+
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
+    # and remove if needed
+  - name: reboot the machine if needed
+    shell:
+      #cmd: "sleep 5; /sbin/reboot"
+      cmd: sleep 10 && /sbin/shutdown -r now 'Rebooting box to update system libs/kernel as needed'
+    args:
+      removes: /var/run/reboot-required
+    async: 300
+    poll: 0
+    ignore_errors: true
+
+  handlers:
+    - name: docker status
+      service: name=docker state=started
