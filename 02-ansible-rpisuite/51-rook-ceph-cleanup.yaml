@@ -1,0 +1,22 @@
+---
+# stage install necessary packages
+- hosts: polar-all
+  become: true
+  
+  tasks:
+
+  - name: delete rook folder
+    shell:
+      cmd: "rm -fr /var/lib/rook"
+
+  - name: zap all sda for a fresh disk
+    shell:
+      cmd: "sgdisk --zap-all /dev/sda"
+  
+  - name: delete device mapping
+    shell:
+      cmd: "ls /dev/mapper/ceph-* | xargs -I% -- dmsetup remove %"
+  
+  - name: delete ceph dev
+    shell:
+      cmd: "rm -fr /dev/ceph-*"
