@@ -4,8 +4,11 @@
   become: yes
 
   tasks:
-  - name: shutdown hosts
-    command: "/sbin/shutdown -r +1"
-    async: 0
-    poll: 0
-    ignore_errors: yes
+  # - name: reboot host with command-shutdown module
+  #   command: "/sbin/shutdown -r +1"
+  #   async: 0
+  #   poll: 0
+  #   ignore_errors: yes
+
+  - name: reboot host unconditionally
+    reboot:
