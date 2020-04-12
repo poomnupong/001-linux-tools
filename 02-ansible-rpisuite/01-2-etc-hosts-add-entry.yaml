@@ -1,0 +1,34 @@
+# provision host entry to every hosts
+- hosts: polar-all
+  become: yes
+
+  tasks:
+
+    # add host entries in block
+    - name: add host entries in loop
+      blockinfile:
+        state: present
+        path: /etc/hosts
+        block: |
+          192.168.86.11  polar1
+          192.168.86.12  polar2
+          192.168.86.13  polar3
+          192.168.86.14  polar4
+          192.168.86.15  polar5
+          192.168.86.16  polar6
+
+    # add host entries in loop, for demo purpose
+    # - name: add host entries in loop
+    #   blockinfile:
+    #     state: absent
+    #     path: /etc/hosts
+    #     block: |
+    #       {{ item.hostname }} {{ item.ipaddr }}
+    #     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.hostname }}"
+    #   loop:
+    #     - { ipaddr: 192.168.86.11, hostname: polar1 }
+    #     - { ipaddr: 192.168.86.12, hostname: polar2 }
+    #     - { ipaddr: 192.168.86.13, hostname: polar3 }
+    #     - { ipaddr: 192.168.86.14, hostname: polar4 }
+    #     - { ipaddr: 192.168.86.15, hostname: polar5 }
+    #     - { ipaddr: 192.168.86.16, hostname: polar6 }

@@ -1,0 +1,14 @@
+# sample - remove specific line in /etc/hosts
+- hosts: polar-all
+  gather_facts: false
+  become: yes
+
+  tasks:
+
+    # remove specific line, 127.0.0.1 polarX in this case
+    - name: remove localhost (hostname) line
+      lineinfile:
+        state: absent
+        path: /etc/hosts
+        # we should fix this complete regex of {{ ansible_host }} variable but this works for now. Moving on.
+        regexp: '^127\.0\.0\.1 polar'

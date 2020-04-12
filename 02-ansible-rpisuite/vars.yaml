@@ -1,0 +1,36 @@
+---
+#####################################
+# 02-ansible-rpisuite
+# vars.yaml
+# Variable file for raspberry pi
+#####################################
+
+# mapping of MAC address to IP
+# mac addresses need to be in lowercase
+mac_address_mapping:
+  "dc:a6:32:36:f7:4d":
+    name: polar1
+    ip: "192.168.86.11/24"
+  "dc:a6:32:36:f7:74":
+    name: polar2
+    ip: "192.168.86.12/24"
+  "dc:a6:32:36:f9:4b":
+    name: polar3
+    ip: "192.168.86.13/24"
+  "dc:a6:32:36:fb:22":
+    name: polar4
+    ip: "192.168.86.14/24"
+  "dc:a6:32:22:86:2d":
+    name: "polar5"
+    ip: "192.168.86.15/24"
+  "dc:a6:32:22:88:2b":
+    name: "polar6"
+    ip: "192.168.86.16/24"
+
+# list of nameservers
+dns_nameservers:
+  - "208.67.220.220"
+  - "208.67.222.222"
+
+# default gateway
+default_gateway: "192.168.86.1"

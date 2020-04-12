@@ -1,0 +1,12 @@
+# remove default ubuntu user
+- hosts: polar-all
+  become: yes
+
+  tasks:
+
+    #remove default user, if present
+    - name: remove default user
+      user:
+        name: ubuntu
+        state: absent
+        remove: yes

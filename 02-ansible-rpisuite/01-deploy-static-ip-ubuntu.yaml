@@ -2,6 +2,7 @@
 # initialize raspberry pi imaged with our custom ubuntu 19.10
 # (see ./cloud-init/sample-user-data)
 # apply only to polarcub-all group which lists our pi that came up with dhcp addresses, read more on inventory.yaml
+# need ssh key deployed on default ubuntu account: ssh-copy-id ubuntu@....
 - hosts: polarcub-all
   become: yes
 
@@ -32,10 +33,11 @@
         line: "127.0.0.1 {{ NODE_HOSTNAME }}"
 
     # actually set the hostname
-    - name: set hostname
-      hostname:
-        name: "{{ NODE_HOSTNAME }}"
-        use: debian
+    # 2020.04.11 - somehow this stops working
+    # - name: set hostname
+    #   hostname:
+    #     name: "{{ NODE_HOSTNAME }}"
+    #     use: debian
     
     # make hostname survive reboots
     # deploy static network setting for eth0

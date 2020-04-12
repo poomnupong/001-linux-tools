@@ -1,10 +1,11 @@
 ---
 # further condition the pis with updates and necessary packages
 - hosts: polar-all
+  gather_facts: false
   become: yes
 
-  vars_files:
-    - vars.yaml
+  # vars_files:
+  #   - vars.yaml
   
   tasks:
     - name: update apt cache and the system
@@ -14,10 +15,12 @@
         autoremove: yes
         autoclean: yes
     
-    - name: install packages
-      apt:
-        pkg:
-          - ntp
+    # we don't need ntp so skip this step
+    # since ubuntu 16.04 it's using timedatectl / timesyncd instead, work out of the box
+    # - name: install packages
+    #   apt:
+    #     pkg:
+    #       - ntp
 
     - name: set time zone
       timezone:
