@@ -3,7 +3,7 @@
 # (see ./cloud-init/sample-user-data)
 # apply only to polarcub-all group which lists our pi that came up with dhcp addresses, read more on inventory.yaml
 # need ssh key deployed on default ubuntu account: ssh-copy-id ubuntu@....
-- hosts: polarcub-all
+- hosts: polarcub_all
   become: yes
 
   vars_files:

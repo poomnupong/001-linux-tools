@@ -1,6 +1,6 @@
 ---
 # further condition the pis with updates and necessary packages
-- hosts: polar-all
+- hosts: polar_all
   gather_facts: false
   become: yes
 

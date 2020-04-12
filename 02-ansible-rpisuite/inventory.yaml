@@ -6,22 +6,44 @@
 #####################################
 
 # our static IP addresses
-polar-all:
-  hosts:
-    polar1:
-      ansible_host: 192.168.86.11
-    polar2:
-      ansible_host: 192.168.86.12
-    polar3:
-      ansible_host: 192.168.86.13
-    polar4:
-      ansible_host: 192.168.86.14
-    polar5:
-      ansible_host: 192.168.86.15
-    polar6:
-      ansible_host: 192.168.86.16
+
+polar_all:
+  children:
+    polar_mgmt:
+      hosts:
+        polar1:
+          ansible_host: 192.168.86.11
+        polar2:
+          ansible_host: 192.168.86.12
+        polar3:
+          ansible_host: 192.168.86.13
+    polar_worker:
+      hosts:
+        polar4:
+          ansible_host: 192.168.86.14
+        polar5:
+          ansible_host: 192.168.86.15
+        polar6:
+          ansible_host: 192.168.86.16
   vars:
     ansible_user: user01
+
+# polar_all:
+#   hosts:
+#     polar1:
+#       ansible_host: 192.168.86.11
+#     polar2:
+#       ansible_host: 192.168.86.12
+#     polar3:
+#       ansible_host: 192.168.86.13
+#     polar4:
+#       ansible_host: 192.168.86.14
+#     polar5:
+#       ansible_host: 192.168.86.15
+#     polar6:
+#       ansible_host: 192.168.86.16
+#   vars:
+#     ansible_user: user01
 
 # add raspberry pi dhcp addresses here
 # they can be detected by command nmap -sn
@@ -39,7 +61,7 @@ polar-all:
 # Host is up (0.0046s latency).
 # MAC Address: DC:A6:32:XX:XX:XX (Raspberry Pi Trading)
 
-polarcub-all:
+polarcub_all:
   hosts:
     polarcub1:
       ansible_host: 192.168.86.30

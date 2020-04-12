@@ -1,6 +1,6 @@
 ---
 # stage install necessary packages
-- hosts: polar-all
+- hosts: polar_all
   become: true
   
   tasks:
@@ -28,9 +28,10 @@
         - ca-certificates
         - software-properties-common
         - gnupg2
-        - ntp
 
+  # only require this for master nodes
   - name: install packages for master nodes
+    when: inventory_hostname in groups['polar_mgmt']
     apt:
       name: "{{ packages }}"
       state: present
@@ -59,8 +60,6 @@
         - docker-ce
         - docker-ce-cli
         - containerd.io
-    notify:
-      - docker status
   
   - name: add user to docker group
     user:
@@ -109,16 +108,5 @@
       state: restarted
 
     # and remove if needed
-  - name: reboot the machine if needed
-    shell:
-      #cmd: "sleep 5; /sbin/reboot"
-      cmd: sleep 10 && /sbin/shutdown -r now 'Rebooting box to update system libs/kernel as needed'
-    args:
-      removes: /var/run/reboot-required
-    async: 300
-    poll: 0
-    ignore_errors: true
-
-  handlers:
-    - name: docker status
-      service: name=docker state=started
+  - name: reboot the hosts
+    reboot:
