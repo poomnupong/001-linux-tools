@@ -1,6 +1,7 @@
 ---
 # shutdown all hosts
-- hosts: polar-all
+- hosts: polar_all
+  gather_facts: no
   become: yes
 
   tasks:
