@@ -1,6 +1,6 @@
 ---
 # stage install necessary packages
-- hosts: polar-all
+- hosts: polar_all
   become: true
   
   tasks:
@@ -11,11 +11,11 @@
 
   - name: zap all sda for a fresh disk
     shell:
-      cmd: "sgdisk --zap-all /dev/sda"
+      cmd: "/sbin/sgdisk --zap-all /dev/sda"
   
   - name: delete device mapping
     shell:
-      cmd: "ls /dev/mapper/ceph-* | xargs -I% -- dmsetup remove %"
+      cmd: 'ls /dev/mapper/ceph-* | xargs -I% -- dmsetup remove %'
   
   - name: delete ceph dev
     shell:
