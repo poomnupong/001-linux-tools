@@ -26,8 +26,8 @@
       timezone:
         name: America/Los_Angeles
 
-    - name: reboot unconditionally
-      reboot:
+    # - name: reboot unconditionally
+    #   reboot:
 
     # - name: check if reboot if required
     #   shell: sleep 5 && shutdown -r now 'Reboot after updates from Ansible'
