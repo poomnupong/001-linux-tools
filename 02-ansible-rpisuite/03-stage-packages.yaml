@@ -28,6 +28,7 @@
         - ca-certificates
         - software-properties-common
         - gnupg2
+        - bmon
 
   # only require this for master nodes
   - name: install packages for master nodes
